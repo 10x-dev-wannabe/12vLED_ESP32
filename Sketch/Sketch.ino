@@ -18,6 +18,16 @@ int B = 0;
 
 int message = 0;
 
+int buttonPressDetect(int pin) {
+  int cnt = 15;
+  for(int i = 0; i < 150; i++) {
+    delay(1);
+    if (touchRead(pin) > 15)
+      return 0;
+  }
+  return 1;
+}
+
 void setup() {
   Serial.begin(115200);
   Serial.println("init finished");
@@ -33,25 +43,24 @@ void loop() {
     brightness -= 1;
   }
 
-  if(touchRead(OffPin) < 15) {
+  if(buttonPressDetect(OffPin))
     if(brightness != 0) {
       brightness = 0;
     } else {
       brightness = 30;
     }
-  }
 
-  if(touchRead(PresetPin1) < 15) {
+  if(buttonPressDetect(PresetPin1)) {
     R = 256;
     G = 256;
     B = 256;
   }
-  if(touchRead(PresetPin2) < 15) {
+  if(buttonPressDetect(PresetPin2)) {
     R = 256;
     G = 100;
     B = 40;
   }
-  if(touchRead(PresetPin3) < 15) {
+  if(buttonPressDetect(PresetPin3)) {
     R = 45;
     G = 256;
     B = 220;
@@ -61,5 +70,7 @@ void loop() {
   analogWrite(Gpin, G*brightness/100);
   analogWrite(Bpin, B*brightness/100);
 
-  delay(100);
+  Serial.println(touchRead(DnPin));
+
+  delay(10);
 }
